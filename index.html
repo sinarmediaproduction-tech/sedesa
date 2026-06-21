@@ -357,74 +357,98 @@ footer.note{max-width:1100px; margin:0 auto; padding:0 18px 30px; font-size:11.5
 
   <!-- ============ TAB: ADMIN ============ -->
   <section id="tab-admin" class="tab-panel">
-    <div class="stats" id="admin-stats"></div>
 
-    <div class="admin-grid">
-      <div class="ledger" style="height:fit-content;">
-        <div class="ledger-head" style="padding:16px 18px;">
-          <div>
-            <p class="eyebrow" id="form-stok-mode">Tambah</p>
-            <h2 style="font-size:17px;">Update Stok Aset</h2>
-          </div>
+    <!-- Lock screen -->
+    <div id="admin-lock" class="ledger" style="max-width:380px; margin:40px auto; text-align:center; padding:34px 28px;">
+      <div class="stamp" style="margin:0 auto 16px; transform:rotate(0deg); width:54px; height:54px;"><span style="font-size:20px;">🔒</span></div>
+      <p class="eyebrow" style="color:var(--copper);">Area Terbatas</p>
+      <h2 style="font-size:19px; margin:0 0 6px;">Masukkan PIN Admin</h2>
+      <p class="sub" style="margin:0 0 18px;">Hanya petugas yang berwenang boleh mengubah data stok.</p>
+      <form id="form-admin-pin" style="text-align:left;">
+        <div class="field" style="margin-bottom:14px;">
+          <label>PIN</label>
+          <input type="password" id="admin-pin-input" inputmode="numeric" placeholder="••••" autocomplete="off" required>
         </div>
-        <div class="ledger-body" style="padding:18px;">
-          <form id="form-stok">
-            <input type="hidden" id="s-id">
-            <div class="field">
-              <label>Nama Barang</label>
-              <input type="text" id="s-nama" placeholder="Kursi Plastik Hijau" required>
-            </div>
-            <div class="field">
-              <label>Lokasi / Gudang</label>
-              <select id="s-gudang" required>
-                <option value="">-- Pilih Lokasi --</option>
-                <option value="Gudang RT 1">Gudang RT 1</option>
-                <option value="Gudang RT 2">Gudang RT 2</option>
-                <option value="Gudang RT 3">Gudang RT 3</option>
-              </select>
-            </div>
-            <div class="field-row">
-              <div class="field">
-                <label>Total Unit</label>
-                <input type="number" id="s-total" min="0" placeholder="150" required>
-              </div>
-              <div class="field">
-                <label>Tersedia</label>
-                <input type="number" id="s-tersedia" min="0" placeholder="150" required>
-              </div>
-            </div>
-            <div style="display:flex; gap:8px; margin-top:6px;">
-              <button type="submit" class="btn btn-navy" style="flex:1;">Simpan Data</button>
-              <button type="button" id="btn-cancel-edit" class="btn btn-ghost" style="display:none;" onclick="cancelEditStok()">Batal</button>
-            </div>
-          </form>
-        </div>
+        <button type="submit" class="btn btn-primary btn-block">Buka Akses</button>
+      </form>
+      <p id="admin-pin-error" class="muted" style="color:var(--brick); margin-top:12px; display:none;">PIN salah. Coba lagi.</p>
+    </div>
+
+    <!-- Protected content -->
+    <div id="admin-content" style="display:none;">
+      <div style="display:flex; justify-content:flex-end; margin-bottom:12px;">
+        <button class="btn btn-ghost btn-sm" onclick="changeAdminPin()">Ganti PIN</button>
+        <button class="btn btn-ghost btn-sm" style="margin-left:8px;" onclick="lockAdmin()">🔒 Kunci</button>
       </div>
+      <div class="stats" id="admin-stats"></div>
 
-      <div class="ledger">
-        <div class="toolbar">
-          <h2 style="font-size:17px; margin:0;">Inventory Terkini</h2>
-          <div class="search">
-            <input type="search" id="admin-search" placeholder="Cari nama barang atau gudang…" oninput="renderAdminTable()">
+      <div class="admin-grid">
+        <div class="ledger" style="height:fit-content;">
+          <div class="ledger-head" style="padding:16px 18px;">
+            <div>
+              <p class="eyebrow" id="form-stok-mode">Tambah</p>
+              <h2 style="font-size:17px;">Update Stok Aset</h2>
+            </div>
+          </div>
+          <div class="ledger-body" style="padding:18px;">
+            <form id="form-stok">
+              <input type="hidden" id="s-id">
+              <div class="field">
+                <label>Nama Barang</label>
+                <input type="text" id="s-nama" placeholder="Kursi Plastik Hijau" required>
+              </div>
+              <div class="field">
+                <label>Lokasi / Gudang</label>
+                <select id="s-gudang" required>
+                  <option value="">-- Pilih Lokasi --</option>
+                  <option value="Gudang RT 1">Gudang RT 1</option>
+                  <option value="Gudang RT 2">Gudang RT 2</option>
+                  <option value="Gudang RT 3">Gudang RT 3</option>
+                </select>
+              </div>
+              <div class="field-row">
+                <div class="field">
+                  <label>Total Unit</label>
+                  <input type="number" id="s-total" min="0" placeholder="150" required>
+                </div>
+                <div class="field">
+                  <label>Tersedia</label>
+                  <input type="number" id="s-tersedia" min="0" placeholder="150" required>
+                </div>
+              </div>
+              <div style="display:flex; gap:8px; margin-top:6px;">
+                <button type="submit" class="btn btn-navy" style="flex:1;">Simpan Data</button>
+                <button type="button" id="btn-cancel-edit" class="btn btn-ghost" style="display:none;" onclick="cancelEditStok()">Batal</button>
+              </div>
+            </form>
           </div>
         </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Barang</th>
-                <th>Lokasi</th>
-                <th style="text-align:center;">Tersedia</th>
-                <th style="text-align:center;">Total</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="admin-tbody"></tbody>
-          </table>
-        </div>
-        <div id="admin-empty" class="empty" style="display:none;">
-          <span class="glyph">📦</span>
-          <p>Belum ada aset tercatat. Tambahkan lewat form di samping.</p>
+
+        <div class="ledger">
+          <div class="toolbar">
+            <h2 style="font-size:17px; margin:0;">Inventory Terkini</h2>
+            <div class="search">
+              <input type="search" id="admin-search" placeholder="Cari nama barang atau gudang…" oninput="renderAdminTable()">
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Barang</th>
+                  <th>Lokasi</th>
+                  <th style="text-align:center;">Tersedia</th>
+                  <th style="text-align:center;">Total</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="admin-tbody"></tbody>
+            </table>
+          </div>
+          <div id="admin-empty" class="empty" style="display:none;">
+            <span class="glyph">📦</span>
+            <p>Belum ada aset tercatat. Tambahkan lewat form di samping.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -536,13 +560,67 @@ function commitResiSeq(){
 let inventory = loadInv();
 let transactions = loadTrx();
 
+/* ============================ ADMIN AUTH ============================ */
+const LS_PIN = 'sima_admin_pin';
+const DEFAULT_PIN = '1234';
+function getAdminPin(){ return localStorage.getItem(LS_PIN) || DEFAULT_PIN; }
+let adminUnlocked = sessionStorage.getItem('sima_admin_unlocked') === '1';
+
+function showAdminTab(){
+  if(adminUnlocked){
+    document.getElementById('admin-lock').style.display = 'none';
+    document.getElementById('admin-content').style.display = 'block';
+    renderAdminTable();
+  } else {
+    document.getElementById('admin-lock').style.display = 'block';
+    document.getElementById('admin-content').style.display = 'none';
+    document.getElementById('admin-pin-input').value = '';
+    document.getElementById('admin-pin-error').style.display = 'none';
+    setTimeout(()=>document.getElementById('admin-pin-input').focus(), 50);
+  }
+}
+
+document.getElementById('form-admin-pin').addEventListener('submit', function(e){
+  e.preventDefault();
+  const val = document.getElementById('admin-pin-input').value.trim();
+  if(val === getAdminPin()){
+    adminUnlocked = true;
+    sessionStorage.setItem('sima_admin_unlocked', '1');
+    showAdminTab();
+    showToast('Akses admin dibuka.');
+  } else {
+    document.getElementById('admin-pin-error').style.display = 'block';
+    document.getElementById('admin-pin-input').value = '';
+    document.getElementById('admin-pin-input').focus();
+  }
+});
+
+function lockAdmin(){
+  adminUnlocked = false;
+  sessionStorage.removeItem('sima_admin_unlocked');
+  showAdminTab();
+}
+
+function changeAdminPin(){
+  const current = prompt('Masukkan PIN lama untuk konfirmasi:');
+  if(current === null) return;
+  if(current !== getAdminPin()){ showToast('PIN lama salah.'); return; }
+  const next = prompt('Masukkan PIN baru (angka, min. 4 digit):');
+  if(next === null) return;
+  if(!/^\d{4,}$/.test(next)){ showToast('PIN baru harus angka minimal 4 digit.'); return; }
+  const confirmNext = prompt('Ulangi PIN baru:');
+  if(confirmNext !== next){ showToast('Konfirmasi PIN tidak cocok.'); return; }
+  localStorage.setItem(LS_PIN, next);
+  showToast('PIN admin berhasil diganti.');
+}
+
 /* ============================ TABS ============================ */
 function switchTab(name){
   document.querySelectorAll('.tab-panel').forEach(el=>el.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
   document.querySelectorAll('.tab-btn').forEach(el=>el.classList.remove('active'));
   document.querySelector(`.tab-btn[data-tab="${name}"]`).classList.add('active');
-  if(name==='admin') renderAdminTable();
+  if(name==='admin') showAdminTab();
   if(name==='historis') renderHistorisTable();
   if(name==='peminjam') document.getElementById('next-resi-preview').textContent = nextResi();
 }
