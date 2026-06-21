@@ -270,6 +270,7 @@ tbody tr:last-child td{border-bottom:none;}
   .hist-search-wrap, .hist-filter-select{max-width:none; width:100%;}
   .admin-grid{gap:14px;}
 
+  .aset-search-bar input[type=search]{ max-width:none; }
   /* turn data tables into stacked cards */
   #admin-tbody, #hist-tbody{ display:block; }
   #tab-admin table thead, #tab-historis table thead{ display:none; }
@@ -349,6 +350,79 @@ tbody tr:last-child td{border-bottom:none;}
 }
 .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
 footer.note{max-width:1100px; margin:0 auto; padding:0 18px 30px; font-size:11.5px; color:var(--ink-soft); text-align:center;}
+
+/* ===== TAB ASET ===== */
+.aset-info-banner{
+  background:var(--sage-bg); border:1px solid var(--sage); border-radius:var(--radius);
+  padding:12px 18px; margin-bottom:22px;
+  display:flex; align-items:center; gap:10px; font-size:13px; color:var(--sage);
+}
+.aset-info-banner strong{ font-weight:700; }
+.gudang-section{ margin-bottom:28px; }
+.gudang-section:last-child{ margin-bottom:0; }
+.gudang-header{
+  display:flex; align-items:center; gap:10px; margin-bottom:12px;
+}
+.gudang-label{
+  font-family:'Source Serif 4',serif; font-weight:700; font-size:17px; color:var(--navy);
+}
+.gudang-count-pill{
+  display:inline-flex; align-items:center; gap:5px;
+  background:var(--paper-dim); border:1px solid var(--line-strong);
+  border-radius:20px; padding:3px 10px; font-size:11px; font-weight:700;
+  color:var(--ink-soft); letter-spacing:.5px; text-transform:uppercase;
+}
+.aset-card-grid{
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:12px;
+}
+@media(max-width:500px){ .aset-card-grid{ grid-template-columns:1fr; } }
+.aset-card{
+  background:var(--card); border:1px solid var(--line);
+  border-radius:6px; padding:16px 18px;
+  box-shadow:0 1px 0 var(--line-strong);
+  display:flex; flex-direction:column; gap:8px;
+}
+.aset-card-name{
+  font-weight:700; font-size:14.5px; color:var(--ink); line-height:1.3;
+}
+.aset-card-stok{
+  display:flex; align-items:baseline; gap:6px;
+}
+.aset-card-stok .num{
+  font-family:'Source Serif 4',serif; font-weight:700; font-size:26px; line-height:1;
+}
+.aset-card-stok .num.ok{ color:var(--sage); }
+.aset-card-stok .num.low{ color:var(--amber); }
+.aset-card-stok .num.habis{ color:var(--brick); }
+.aset-card-stok .denom{ font-size:12px; color:var(--ink-soft); }
+.aset-card-bar-wrap{
+  background:var(--paper-dim); border-radius:3px; height:5px; overflow:hidden;
+}
+.aset-card-bar{
+  height:100%; border-radius:3px; transition:width .4s ease;
+}
+.aset-card-bar.ok{ background:var(--sage); }
+.aset-card-bar.low{ background:var(--amber); }
+.aset-card-bar.habis{ background:var(--brick); }
+.aset-card-meta{
+  font-size:11px; color:var(--ink-soft); display:flex; align-items:center; gap:5px;
+  border-top:1px dashed var(--line); padding-top:8px; margin-top:2px;
+}
+.aset-card-meta .meta-icon{ opacity:.6; }
+.aset-publik-note{
+  font-size:11.5px; color:var(--ink-soft); text-align:center; margin-top:18px;
+  padding-top:14px; border-top:1px dashed var(--line);
+}
+.aset-search-bar{
+  display:flex; gap:10px; margin-bottom:22px; flex-wrap:wrap;
+}
+.aset-search-bar input[type=search]{
+  flex:1; min-width:180px; padding:9px 12px; border:1px solid var(--line-strong);
+  border-radius:var(--radius); background:var(--paper-dim); font-size:13px;
+  font-family:inherit; outline:none;
+}
+.aset-search-bar input[type=search]:focus{ border-color:var(--copper); }
+.aset-stats{ margin-bottom:22px; }
 </style>
 </head>
 <body>
@@ -369,6 +443,7 @@ footer.note{max-width:1100px; margin:0 auto; padding:0 18px 30px; font-size:11.5
     </div>
     <nav class="tabs">
       <button class="tab-btn active" data-tab="peminjam" onclick="switchTab('peminjam')">Form Peminjam</button>
+      <button class="tab-btn" data-tab="aset" onclick="switchTab('aset')">Aset</button>
       <button class="tab-btn" data-tab="historis" onclick="switchTab('historis')">Historis</button>
     </nav>
   </div>
@@ -421,6 +496,29 @@ footer.note{max-width:1100px; margin:0 auto; padding:0 18px 30px; font-size:11.5
             Kirim Form &amp; Generate Bukti WA
           </button>
         </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TAB: ASET ============ -->
+  <section id="tab-aset" class="tab-panel">
+    <div class="ledger">
+      <div class="ledger-head">
+        <div>
+          <p class="eyebrow">Informasi Publik</p>
+          <h2>Inventaris Aset Desa</h2>
+          <p class="sub">Daftar aset dan ketersediaan stok per gudang. Dapat dilihat oleh seluruh warga.</p>
+        </div>
+      </div>
+      <div class="ledger-body">
+        <div class="aset-info-banner">
+          <span>🏛️</span>
+          <span><strong>Data ini bersifat publik.</strong> Stok ditampilkan sesuai kondisi terkini. Hubungi admin untuk informasi lebih lanjut.</span>
+        </div>
+        <div class="aset-search-bar">
+          <input type="search" id="aset-search" placeholder="Cari nama barang…" oninput="renderAsetPublik()">
+        </div>
+        <div id="aset-publik-content"></div>
       </div>
     </div>
   </section>
@@ -596,9 +694,12 @@ function saveTrx(d){ localStorage.setItem(LS_TRX, JSON.stringify(d)); }
 
 function seedInv(){
   const d = [
-    {id: uid(), nama:'Kursi Plastik Hijau', gudang:'Gudang RT 1', total:150, tersedia:120},
-    {id: uid(), nama:'Tenda Terop 4x6', gudang:'Gudang RT 2', total:4, tersedia:3},
-    {id: uid(), nama:'Sound System', gudang:'Gudang RT 3', total:2, tersedia:1},
+    {id: uid(), nama:'Kursi Plastik Hijau', gudang:'Gudang RT 1', total:150, tersedia:120, lastUpdated:'2026-06-01'},
+    {id: uid(), nama:'Meja Lipat', gudang:'Gudang RT 1', total:30, tersedia:30, lastUpdated:'2026-05-20'},
+    {id: uid(), nama:'Tenda Terop 4x6', gudang:'Gudang RT 2', total:4, tersedia:3, lastUpdated:'2026-06-10'},
+    {id: uid(), nama:'Panggung Portable', gudang:'Gudang RT 2', total:1, tersedia:1, lastUpdated:'2026-04-15'},
+    {id: uid(), nama:'Sound System', gudang:'Gudang RT 3', total:2, tersedia:1, lastUpdated:'2026-06-18'},
+    {id: uid(), nama:'Proyektor', gudang:'Gudang RT 3', total:1, tersedia:0, lastUpdated:'2026-06-05'},
   ];
   saveInv(d);
   return d;
@@ -696,6 +797,7 @@ function switchTab(name){
   }
   if(name==='admin') showAdminTab();
   if(name==='historis') renderHistorisTable();
+  if(name==='aset') renderAsetPublik();
   if(name==='peminjam') document.getElementById('next-resi-preview').textContent = nextResi();
 }
 
@@ -896,17 +998,19 @@ document.getElementById('form-stok').addEventListener('submit', function(e){
 
   if(tersedia > total){ showToast('Stok tersedia tidak boleh melebihi total unit.'); return; }
 
+  const now = new Date().toISOString().slice(0,10);
   if(id){
     const item = inventory.find(i=>i.id===id);
-    Object.assign(item, {nama, gudang, total, tersedia});
+    Object.assign(item, {nama, gudang, total, tersedia, lastUpdated: now});
     showToast('Data aset diperbarui.');
   } else {
-    inventory.push({id: uid(), nama, gudang, total, tersedia});
+    inventory.push({id: uid(), nama, gudang, total, tersedia, lastUpdated: now});
     showToast('Aset baru ditambahkan.');
   }
   saveInv(inventory);
   cancelEditStok();
   renderAdminTable();
+  renderAsetPublik();
 });
 
 function editStok(id){
@@ -1015,6 +1119,71 @@ function refreshFormDependents(){
     const current = sel.value;
     sel.innerHTML = `<option value="">-- Pilih Barang --</option>${invOptionsHTML(current)}`;
   });
+}
+
+/* ============================ TAB ASET PUBLIK ============================ */
+function renderAsetPublik(){
+  const q = (document.getElementById('aset-search').value || '').toLowerCase();
+  const filtered = inventory.filter(i => i.nama.toLowerCase().includes(q));
+
+  // group by gudang, preserve order
+  const gudangMap = {};
+  const gudangOrder = [];
+  filtered.forEach(item => {
+    if(!gudangMap[item.gudang]){
+      gudangMap[item.gudang] = [];
+      gudangOrder.push(item.gudang);
+    }
+    gudangMap[item.gudang].push(item);
+  });
+
+  const container = document.getElementById('aset-publik-content');
+  if(filtered.length === 0){
+    container.innerHTML = `<div class="empty"><span class="glyph">📦</span><p>Tidak ada aset yang cocok dengan pencarian.</p></div>`;
+    return;
+  }
+
+  const html = gudangOrder.map(gudang => {
+    const items = gudangMap[gudang];
+    const totalUnit = items.reduce((s,i)=>s+i.total,0);
+    const tersediaUnit = items.reduce((s,i)=>s+i.tersedia,0);
+    const cards = items.map(item => {
+      const pct = item.total > 0 ? Math.round((item.tersedia/item.total)*100) : 0;
+      const isHabis = item.tersedia <= 0;
+      const isLow = !isHabis && item.tersedia <= Math.max(1, Math.round(item.total*0.15));
+      const cls = isHabis ? 'habis' : isLow ? 'low' : 'ok';
+      const statusLabel = isHabis ? '— Habis' : isLow ? ' (hampir habis)' : '';
+      const updatedStr = item.lastUpdated
+        ? new Date(item.lastUpdated+'T00:00:00').toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})
+        : '—';
+      return `
+        <div class="aset-card">
+          <div class="aset-card-name">${escapeHtml(item.nama)}</div>
+          <div class="aset-card-stok">
+            <span class="num ${cls}">${item.tersedia}</span>
+            <span class="denom">/ ${item.total} unit tersedia${statusLabel}</span>
+          </div>
+          <div class="aset-card-bar-wrap">
+            <div class="aset-card-bar ${cls}" style="width:${pct}%"></div>
+          </div>
+          <div class="aset-card-meta">
+            <span class="meta-icon">🕒</span>
+            Stok diperbarui: <strong>${updatedStr}</strong>
+          </div>
+        </div>`;
+    }).join('');
+
+    return `
+      <div class="gudang-section">
+        <div class="gudang-header">
+          <span class="gudang-label">📦 ${escapeHtml(gudang)}</span>
+          <span class="gudang-count-pill">${tersediaUnit} / ${totalUnit} unit tersedia</span>
+        </div>
+        <div class="aset-card-grid">${cards}</div>
+      </div>`;
+  }).join('');
+
+  container.innerHTML = html + `<p class="aset-publik-note">📋 Data stok diperbarui secara real-time. Terakhir dimuat: ${new Date().toLocaleString('id-ID')}.</p>`;
 }
 
 /* ============================ INIT ============================ */
