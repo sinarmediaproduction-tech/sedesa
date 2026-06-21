@@ -72,6 +72,17 @@ header.top{
 .brand-text h1{font-size:19px; margin:0; letter-spacing:.3px; font-weight:600;}
 .brand-text p{margin:1px 0 0; font-size:11px; color:#B9C1D4; text-transform:uppercase; letter-spacing:1.5px;}
 
+.admin-corner-btn{
+  display:flex; align-items:center; gap:6px; flex-shrink:0;
+  background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.25);
+  color:#D8DCE6; font-family:'Public Sans',sans-serif;
+  font-size:12.5px; font-weight:700; letter-spacing:.3px;
+  padding:8px 16px; border-radius:30px; cursor:pointer;
+  transition:background .15s, border-color .15s, color .15s;
+}
+.admin-corner-btn:hover{ background:rgba(255,255,255,.14); border-color:var(--copper-light); color:#fff; }
+.admin-corner-btn.active{ background:var(--copper); border-color:var(--copper); color:#fff; }
+
 nav.tabs{display:flex; gap:4px; overflow-x:auto;}
 nav.tabs::-webkit-scrollbar{display:none;}
 .tab-btn{
@@ -139,19 +150,30 @@ main{max-width:1100px; margin:0 auto; padding:26px 18px 60px;}
 
 /* item rows */
 .item-row{
-  display:grid; grid-template-columns:1fr 90px 38px; gap:8px;
-  align-items:end; padding:12px; background:var(--paper-dim);
-  border:1px solid var(--line); border-radius:var(--radius); margin-bottom:10px;
+  display:grid; grid-template-columns:1fr 110px 42px; gap:14px;
+  align-items:end; padding:18px 18px 20px; background:var(--paper-dim);
+  border:1px solid var(--line); border-radius:6px; margin-bottom:16px;
+  position:relative;
 }
-@media(max-width:560px){.item-row{grid-template-columns:1fr; }}
+.item-row .item-index{
+  position:absolute; top:-10px; left:14px; background:var(--card);
+  border:1px solid var(--line); padding:2px 10px; border-radius:20px;
+  font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.8px;
+  color:var(--ink-soft);
+}
+@media(max-width:560px){
+  .item-row{grid-template-columns:1fr; gap:14px; padding:22px 16px 18px;}
+  .item-row .btn-rm{width:100%; height:42px;}
+}
 .item-row .field{margin-bottom:0;}
+.item-row .field select, .item-row .field input{padding:11px 2px; font-size:15.5px;}
 .btn-rm{
-  height:38px; border:1px solid var(--brick); background:var(--brick-bg); color:var(--brick);
-  border-radius:var(--radius); cursor:pointer; font-size:15px; font-weight:700;
+  height:42px; border:1px solid var(--brick); background:var(--brick-bg); color:var(--brick);
+  border-radius:6px; cursor:pointer; font-size:16px; font-weight:700;
 }
 .btn-add-item{
   background:none; border:1px dashed var(--line-strong); color:var(--navy);
-  font-weight:700; font-size:13px; padding:10px; width:100%; border-radius:var(--radius);
+  font-weight:700; font-size:13.5px; padding:14px; width:100%; border-radius:6px;
   cursor:pointer; letter-spacing:.3px;
 }
 .btn-add-item:hover{border-color:var(--copper); color:var(--copper);}
@@ -233,6 +255,52 @@ tbody tr:last-child td{border-bottom:none;}
   background:var(--paper-dim); font-size:13px; font-family:inherit; outline:none;
 }
 .toolbar input[type=search]:focus, .toolbar select:focus{border-color:var(--copper);}
+.toolbar-actions{display:flex; gap:10px; flex-wrap:wrap; flex:1; justify-content:flex-end;}
+.hist-search-wrap{max-width:220px;}
+.hist-filter-select{max-width:170px; padding:9px 12px; border:1px solid var(--line-strong); border-radius:var(--radius); background:var(--paper-dim); font-size:13px; font-family:inherit;}
+
+/* ===== MOBILE OPTIMIZATION ===== */
+@media(max-width:680px){
+  main{padding:18px 12px 50px;}
+  .ledger-head{padding:16px 16px 14px;}
+  .ledger-body{padding:18px 16px;}
+  .ledger-head h2{font-size:18px;}
+  .toolbar{flex-direction:column; align-items:stretch; padding:14px 16px;}
+  .toolbar-actions{justify-content:stretch;}
+  .hist-search-wrap, .hist-filter-select{max-width:none; width:100%;}
+  .admin-grid{gap:14px;}
+
+  /* turn data tables into stacked cards */
+  #admin-tbody, #hist-tbody{ display:block; }
+  #tab-admin table thead, #tab-historis table thead{ display:none; }
+  #tab-admin table, #tab-admin tbody, #tab-admin tr,
+  #tab-historis table, #tab-historis tbody, #tab-historis tr{ display:block; width:100%; }
+  #tab-admin tbody tr, #tab-historis tbody tr{
+    border:1px solid var(--line); border-radius:8px; margin:0 14px 12px;
+    padding:4px 14px; background:var(--card);
+    box-shadow:0 1px 0 var(--line-strong);
+  }
+  #tab-admin tbody td, #tab-historis tbody td{
+    display:flex; align-items:center; justify-content:space-between; gap:14px;
+    padding:10px 0; border-bottom:1px dashed var(--line);
+    text-align:right; white-space:normal !important; min-width:0 !important;
+  }
+  #tab-admin tbody tr td:last-child, #tab-historis tbody tr td:last-child{ border-bottom:none; }
+  #tab-admin tbody td[data-label]::before, #tab-historis tbody td[data-label]::before{
+    content:attr(data-label); font-size:10px; text-transform:uppercase; letter-spacing:.6px;
+    font-weight:700; color:var(--ink-soft); text-align:left; flex-shrink:0;
+  }
+  #tab-admin tbody td[data-label=""]::before, #tab-historis tbody td[data-label=""]::before{ display:none; }
+  /* first cell (name / resi) becomes the card header, stacked, no label */
+  #tab-admin tbody td[data-label="Barang"], #tab-historis tbody td[data-label="Peminjam"]{
+    flex-direction:column; align-items:flex-start; text-align:left; padding-top:14px;
+  }
+  #tab-admin tbody td[data-label="Barang"]::before, #tab-historis tbody td[data-label="Peminjam"]::before{ display:none; }
+  #tab-historis tbody td[data-label="Barang & Gudang"]{ flex-direction:column; align-items:flex-start; text-align:left; }
+  #tab-historis tbody td[data-label="Barang & Gudang"]::before{ margin-bottom:4px; }
+  #tab-admin tbody td[data-label=""] .row-actions, #tab-historis tbody td[data-label=""]{ justify-content:flex-end; }
+  #tab-historis select.pill{ width:auto; }
+}
 
 /* empty state */
 .empty{padding:50px 20px; text-align:center; color:var(--ink-soft);}
@@ -295,10 +363,12 @@ footer.note{max-width:1100px; margin:0 auto; padding:0 18px 30px; font-size:11.5
           <p>Buku Inventaris &amp; Pinjam Aset</p>
         </div>
       </div>
+      <button class="admin-corner-btn" id="btn-admin-corner" data-tab="admin" onclick="switchTab('admin')" title="Akses Admin">
+        <span>Admin</span>
+      </button>
     </div>
     <nav class="tabs">
       <button class="tab-btn active" data-tab="peminjam" onclick="switchTab('peminjam')">Form Peminjam</button>
-      <button class="tab-btn" data-tab="admin" onclick="switchTab('admin')">Admin Stok</button>
       <button class="tab-btn" data-tab="historis" onclick="switchTab('historis')">Historis</button>
     </nav>
   </div>
@@ -320,15 +390,15 @@ footer.note{max-width:1100px; margin:0 auto; padding:0 18px 30px; font-size:11.5
         <form id="form-pinjam">
           <div class="field">
             <label>Nama Lengkap</label>
-            <input type="text" id="f-nama" placeholder="Budi Santoso" required>
+            <input type="text" id="f-nama" placeholder="Nama Peminjam" required>
           </div>
           <div class="field">
             <label>Alamat / RT RW</label>
-            <input type="text" id="f-alamat" placeholder="RT 03 / RW 01, Dusun Krajan" required>
+            <input type="text" id="f-alamat" placeholder="Alamat Peminjam" required>
           </div>
           <div class="field">
             <label>No. WhatsApp</label>
-            <input type="tel" id="f-wa" placeholder="081234567xxx" required>
+            <input type="tel" id="f-wa" placeholder="Nomor WhatsApp Peminjam" required>
           </div>
           <div class="field-row">
             <div class="field">
@@ -460,13 +530,13 @@ footer.note{max-width:1100px; margin:0 auto; padding:0 18px 30px; font-size:11.5
       <div class="toolbar">
         <div>
           <h2 style="font-size:17px; margin:0;">Log Peminjaman</h2>
-          <p class="muted" style="margin-top:2px;">Klik status untuk mengubah keadaan transaksi.</p>
+          <p class="muted" style="margin-top:2px;">Tap status untuk mengubah keadaan transaksi.</p>
         </div>
-        <div style="display:flex; gap:10px; flex-wrap:wrap; flex:1; justify-content:flex-end;">
-          <div class="search" style="max-width:220px;">
+        <div class="toolbar-actions">
+          <div class="search hist-search-wrap">
             <input type="search" id="hist-search" placeholder="Cari resi / nama…" oninput="renderHistorisTable()">
           </div>
-          <select id="hist-filter" onchange="renderHistorisTable()" style="max-width:170px; padding:9px 12px; border:1px solid var(--line-strong); border-radius:var(--radius); background:var(--paper-dim); font-size:13px;">
+          <select id="hist-filter" class="hist-filter-select" onchange="renderHistorisTable()">
             <option value="">Semua Status</option>
             <option value="aktif">⏳ Aktif</option>
             <option value="selesai">✅ Selesai</option>
@@ -619,7 +689,12 @@ function switchTab(name){
   document.querySelectorAll('.tab-panel').forEach(el=>el.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
   document.querySelectorAll('.tab-btn').forEach(el=>el.classList.remove('active'));
-  document.querySelector(`.tab-btn[data-tab="${name}"]`).classList.add('active');
+  document.getElementById('btn-admin-corner').classList.remove('active');
+  if(name === 'admin'){
+    document.getElementById('btn-admin-corner').classList.add('active');
+  } else {
+    document.querySelector(`.tab-btn[data-tab="${name}"]`).classList.add('active');
+  }
   if(name==='admin') showAdminTab();
   if(name==='historis') renderHistorisTable();
   if(name==='peminjam') document.getElementById('next-resi-preview').textContent = nextResi();
@@ -653,6 +728,7 @@ function addItemRow(){
   row.className = 'item-row';
   row.dataset.rowId = rowId;
   row.innerHTML = `
+    <span class="item-index">Barang #${itemRowsEl.children.length + 1}</span>
     <div class="field">
       <label>Barang</label>
       <select class="row-item">
@@ -672,6 +748,12 @@ function removeItemRow(rowId){
   if(itemRowsEl.children.length <= 1){ showToast('Minimal satu baris barang diperlukan.'); return; }
   const el = itemRowsEl.querySelector(`[data-row-id="${rowId}"]`);
   if(el) el.remove();
+  renumberItemRows();
+}
+function renumberItemRows(){
+  [...itemRowsEl.querySelectorAll('.item-row')].forEach((row, i)=>{
+    row.querySelector('.item-index').textContent = `Barang #${i+1}`;
+  });
 }
 
 document.getElementById('form-pinjam').addEventListener('submit', function(e){
@@ -789,11 +871,11 @@ function renderAdminTable(){
       const low = i.tersedia <= Math.max(1, Math.round(i.total*0.1));
       return `
       <tr>
-        <td style="font-weight:600;">${escapeHtml(i.nama)}</td>
-        <td><span class="pill" style="border-style:solid; color:var(--navy); background:#E9EDF5;">${escapeHtml(i.gudang)}</span></td>
-        <td style="text-align:center;" class="${low?'qty-low':'qty-ok'}">${i.tersedia}</td>
-        <td style="text-align:center;" class="muted">${i.total}</td>
-        <td>
+        <td data-label="Barang" style="font-weight:600;">${escapeHtml(i.nama)}</td>
+        <td data-label="Lokasi"><span class="pill" style="border-style:solid; color:var(--navy); background:#E9EDF5;">${escapeHtml(i.gudang)}</span></td>
+        <td data-label="Tersedia" style="text-align:center;" class="${low?'qty-low':'qty-ok'}">${i.tersedia}</td>
+        <td data-label="Total" style="text-align:center;" class="muted">${i.total}</td>
+        <td data-label="">
           <div class="row-actions">
             <button class="icon-btn" title="Edit" onclick="editStok('${i.id}')">✎</button>
             <button class="icon-btn danger" title="Hapus" onclick="deleteStok('${i.id}')">🗑</button>
@@ -878,20 +960,20 @@ function renderHistorisTable(){
       const statusIcon = {aktif:'⏳', selesai:'✅', bermasalah:'⚠️'}[t.status];
       return `
       <tr>
-        <td>
+        <td data-label="Peminjam">
           <div class="resi">#${t.resi}</div>
           <div class="muted">${escapeHtml(t.nama)}</div>
         </td>
-        <td style="white-space:normal; min-width:200px;">${itemsText}</td>
-        <td class="muted" style="white-space:normal; min-width:120px;">${formatDate(t.tglPinjam)} → ${formatDate(t.tglKembali)}</td>
-        <td style="text-align:center;">
+        <td data-label="Barang &amp; Gudang" style="white-space:normal; min-width:200px;">${itemsText}</td>
+        <td data-label="Tanggal" class="muted" style="white-space:normal; min-width:120px;">${formatDate(t.tglPinjam)} → ${formatDate(t.tglKembali)}</td>
+        <td data-label="Status" style="text-align:center;">
           <select class="pill ${t.status}" style="border:1.5px dashed currentColor; cursor:pointer; appearance:none; font-family:inherit;" onchange="changeStatus('${t.id}', this.value)">
             <option value="aktif" ${t.status==='aktif'?'selected':''}>⏳ Aktif</option>
             <option value="selesai" ${t.status==='selesai'?'selected':''}>✅ Selesai</option>
             <option value="bermasalah" ${t.status==='bermasalah'?'selected':''}>⚠️ Bermasalah</option>
           </select>
         </td>
-        <td>
+        <td data-label="">
           <button class="icon-btn danger" title="Hapus catatan" onclick="deleteTrx('${t.id}')">🗑</button>
         </td>
       </tr>`;
